@@ -34,7 +34,12 @@ pub struct BscPrecompiles {
 impl BscPrecompiles {
     /// Create a new [`BscPrecompiles`] with the given precompiles.
     pub fn new(precompiles: &'static Precompiles) -> Self {
-        Self { inner: EthPrecompiles { precompiles, spec: SpecId::default() } }
+        Self {
+            inner: EthPrecompiles {
+                precompiles,
+                spec: SpecId::default(),
+            },
+        }
     }
 
     /// Create a new precompile provider with the given bsc spec.
@@ -42,21 +47,21 @@ impl BscPrecompiles {
     pub fn new_with_spec(spec: BscSpecId) -> Self {
         match spec {
             // Pre-BSC hardforks use standard Ethereum precompiles
-            BscSpecId::FRONTIER |
-            BscSpecId::FRONTIER_THAWING |
-            BscSpecId::HOMESTEAD |
-            BscSpecId::TANGERINE |
-            BscSpecId::SPURIOUS_DRAGON => Self::new(Precompiles::homestead()),
+            BscSpecId::FRONTIER
+            | BscSpecId::FRONTIER_THAWING
+            | BscSpecId::HOMESTEAD
+            | BscSpecId::TANGERINE
+            | BscSpecId::SPURIOUS_DRAGON => Self::new(Precompiles::homestead()),
             BscSpecId::BYZANTIUM | BscSpecId::CONSTANTINOPLE | BscSpecId::PETERSBURG => {
                 Self::new(Precompiles::byzantium())
             }
             BscSpecId::ISTANBUL | BscSpecId::MUIR_GLACIER => Self::new(Precompiles::istanbul()),
             // BSC specific hardforks
-            BscSpecId::RAMANUJAN |
-            BscSpecId::NIELS |
-            BscSpecId::MIRROR_SYNC |
-            BscSpecId::BRUNO |
-            BscSpecId::EULER => Self::new(istanbul()),
+            BscSpecId::RAMANUJAN
+            | BscSpecId::NIELS
+            | BscSpecId::MIRROR_SYNC
+            | BscSpecId::BRUNO
+            | BscSpecId::EULER => Self::new(istanbul()),
             BscSpecId::NANO => Self::new(nano()),
             BscSpecId::MORAN | BscSpecId::GIBBS => Self::new(moran()),
             BscSpecId::PLANCK => Self::new(planck()),
@@ -83,7 +88,10 @@ impl BscPrecompiles {
 pub fn istanbul() -> &'static Precompiles {
     static ISTANBUL: Lazy<Precompiles> = Lazy::new(|| {
         let mut precompiles = Precompiles::istanbul().clone();
-        precompiles.extend([tendermint::TENDERMINT_HEADER_VALIDATION, iavl::IAVL_PROOF_VALIDATION]);
+        precompiles.extend([
+            tendermint::TENDERMINT_HEADER_VALIDATION,
+            iavl::IAVL_PROOF_VALIDATION,
+        ]);
         precompiles
     });
     &ISTANBUL
@@ -93,7 +101,10 @@ pub fn istanbul() -> &'static Precompiles {
 pub fn berlin() -> &'static Precompiles {
     static BERLIN: Lazy<Precompiles> = Lazy::new(|| {
         let mut precompiles = Precompiles::berlin().clone();
-        precompiles.extend([tendermint::TENDERMINT_HEADER_VALIDATION, iavl::IAVL_PROOF_VALIDATION]);
+        precompiles.extend([
+            tendermint::TENDERMINT_HEADER_VALIDATION,
+            iavl::IAVL_PROOF_VALIDATION,
+        ]);
         precompiles
     });
     &BERLIN
@@ -118,8 +129,10 @@ pub fn moran() -> &'static Precompiles {
     static INSTANCE: OnceBox<Precompiles> = OnceBox::new();
     INSTANCE.get_or_init(|| {
         let mut precompiles = istanbul().clone();
-        precompiles
-            .extend([tendermint::TENDERMINT_HEADER_VALIDATION, iavl::IAVL_PROOF_VALIDATION_MORAN]);
+        precompiles.extend([
+            tendermint::TENDERMINT_HEADER_VALIDATION,
+            iavl::IAVL_PROOF_VALIDATION_MORAN,
+        ]);
 
         Box::new(precompiles)
     })
@@ -130,8 +143,10 @@ pub fn planck() -> &'static Precompiles {
     static INSTANCE: OnceBox<Precompiles> = OnceBox::new();
     INSTANCE.get_or_init(|| {
         let mut precompiles = istanbul().clone();
-        precompiles
-            .extend([tendermint::TENDERMINT_HEADER_VALIDATION, iavl::IAVL_PROOF_VALIDATION_PLANCK]);
+        precompiles.extend([
+            tendermint::TENDERMINT_HEADER_VALIDATION,
+            iavl::IAVL_PROOF_VALIDATION_PLANCK,
+        ]);
 
         Box::new(precompiles)
     })
@@ -273,7 +288,8 @@ where
         is_static: bool,
         gas_limit: u64,
     ) -> Result<Option<Self::Output>, String> {
-        self.inner.run(context, address, inputs, is_static, gas_limit)
+        self.inner
+            .run(context, address, inputs, is_static, gas_limit)
     }
 
     #[inline]

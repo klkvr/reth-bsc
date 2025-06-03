@@ -58,13 +58,13 @@ impl BscSpecId {
             Self::SPURIOUS_DRAGON => SpecId::SPURIOUS_DRAGON,
             Self::BYZANTIUM => SpecId::BYZANTIUM,
             Self::CONSTANTINOPLE | Self::PETERSBURG => SpecId::PETERSBURG,
-            Self::ISTANBUL |
-            Self::MUIR_GLACIER |
-            Self::RAMANUJAN |
-            Self::NIELS |
-            Self::MIRROR_SYNC |
-            Self::BRUNO |
-            Self::EULER => SpecId::ISTANBUL,
+            Self::ISTANBUL
+            | Self::MUIR_GLACIER
+            | Self::RAMANUJAN
+            | Self::NIELS
+            | Self::MIRROR_SYNC
+            | Self::BRUNO
+            | Self::EULER => SpecId::ISTANBUL,
             Self::NANO => SpecId::SHANGHAI,
             Self::MORAN | Self::GIBBS => SpecId::LONDON,
             Self::PLANCK => SpecId::SHANGHAI,

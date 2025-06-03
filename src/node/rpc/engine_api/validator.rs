@@ -35,7 +35,9 @@ where
     type Validator = BscEngineValidator;
 
     async fn build(self, ctx: &AddOnsContext<'_, Node>) -> eyre::Result<Self::Validator> {
-        Ok(BscEngineValidator::new(Arc::new(ctx.config.chain.clone().as_ref().clone())))
+        Ok(BscEngineValidator::new(Arc::new(
+            ctx.config.chain.clone().as_ref().clone(),
+        )))
     }
 }
 
@@ -48,7 +50,9 @@ pub struct BscEngineValidator {
 impl BscEngineValidator {
     /// Instantiates a new validator.
     pub fn new(chain_spec: Arc<BscChainSpec>) -> Self {
-        Self { inner: BscExecutionPayloadValidator { inner: chain_spec } }
+        Self {
+            inner: BscExecutionPayloadValidator { inner: chain_spec },
+        }
     }
 }
 
@@ -93,9 +97,13 @@ impl PayloadValidator for BscEngineValidator {
         &self,
         payload: Self::ExecutionData,
     ) -> Result<RecoveredBlock<Self::Block>, NewPayloadError> {
-        let sealed_block =
-            self.inner.ensure_well_formed_payload(payload).map_err(NewPayloadError::other)?;
-        sealed_block.try_recover().map_err(|e| NewPayloadError::Other(e.into()))
+        let sealed_block = self
+            .inner
+            .ensure_well_formed_payload(payload)
+            .map_err(NewPayloadError::other)?;
+        sealed_block
+            .try_recover()
+            .map_err(|e| NewPayloadError::Other(e.into()))
     }
 
     fn validate_block_post_execution_with_hashed_state(
@@ -156,7 +164,7 @@ where
             return Err(PayloadError::BlockHash {
                 execution: sealed_block.hash(),
                 consensus: expected_hash,
-            })?
+            })?;
         }
 
         Ok(sealed_block)

@@ -104,7 +104,12 @@ where
     type RpcBlock = alloy_rpc_types::Block;
 
     fn rpc_to_primitive_block(rpc_block: Self::RpcBlock) -> Block {
-        let alloy_rpc_types::Block { header, transactions, withdrawals, .. } = rpc_block;
+        let alloy_rpc_types::Block {
+            header,
+            transactions,
+            withdrawals,
+            ..
+        } = rpc_block;
         Block {
             header: header.inner,
             body: BlockBody {

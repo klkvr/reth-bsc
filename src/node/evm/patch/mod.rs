@@ -641,7 +641,9 @@ where
     DB: Database,
     <DB as revm::Database>::Error: Sync + Send + 'static,
 {
-    let account = state.load_cache_account(address).map_err(BlockExecutionError::other)?;
+    let account = state
+        .load_cache_account(address)
+        .map_err(BlockExecutionError::other)?;
     let account_change = account.change(
         account.account_info().unwrap_or_default(),
         storage
@@ -649,7 +651,10 @@ where
             .map(|(key, value)| {
                 (
                     *key,
-                    StorageSlot { previous_or_original_value: U256::ZERO, present_value: *value },
+                    StorageSlot {
+                        previous_or_original_value: U256::ZERO,
+                        present_value: *value,
+                    },
                 )
             })
             .collect(),

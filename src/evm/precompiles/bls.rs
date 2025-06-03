@@ -30,8 +30,8 @@ fn bls_signature_validation_run(input: &[u8], gas_limit: u64) -> PrecompileResul
 
     let msg_and_sig_length = BLS_MSG_HASH_LENGTH + BLS_SIGNATURE_LENGTH;
     let input_length = input.len() as u64;
-    if (input_length <= msg_and_sig_length) ||
-        ((input_length - msg_and_sig_length) % BLS_SINGLE_PUBKEY_LENGTH != 0)
+    if (input_length <= msg_and_sig_length)
+        || ((input_length - msg_and_sig_length) % BLS_SINGLE_PUBKEY_LENGTH != 0)
     {
         return Err(BscPrecompileError::Reverted(cost).into());
     }
@@ -51,8 +51,8 @@ fn bls_signature_validation_run(input: &[u8], gas_limit: u64) -> PrecompileResul
 
     // check pubkey format and push to pub_keys
     for i in 0..pub_key_count {
-        let pub_key = &pub_keys_data[i as usize * BLS_SINGLE_PUBKEY_LENGTH as usize..
-            (i + 1) as usize * BLS_SINGLE_PUBKEY_LENGTH as usize];
+        let pub_key = &pub_keys_data[i as usize * BLS_SINGLE_PUBKEY_LENGTH as usize
+            ..(i + 1) as usize * BLS_SINGLE_PUBKEY_LENGTH as usize];
         if !bls::key_validate(&pub_key.to_vec()) {
             return Err(BscPrecompileError::Reverted(cost).into());
         }
@@ -65,8 +65,8 @@ fn bls_signature_validation_run(input: &[u8], gas_limit: u64) -> PrecompileResul
 
     // verify signature
     let mut output = Bytes::from(vec![1]);
-    if (pub_keys.len() == 1 && !bls::verify(&pub_keys[0], msg_hash, signature, &BLS_DST.to_vec())) ||
-        !bls::aggregate_verify(pub_keys, msg_hashes, signature, &BLS_DST.to_vec())
+    if (pub_keys.len() == 1 && !bls::verify(&pub_keys[0], msg_hash, signature, &BLS_DST.to_vec()))
+        || !bls::aggregate_verify(pub_keys, msg_hashes, signature, &BLS_DST.to_vec())
     {
         output = Bytes::from(vec![]);
     }

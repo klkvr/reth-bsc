@@ -5880,9 +5880,16 @@ mod tests {
         let expected = "63a036b500000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000";
 
         let stake_hub_abi: JsonAbi = serde_json::from_str(*STAKE_HUB_ABI).unwrap();
-        let function = stake_hub_abi.function("getValidatorElectionInfo").unwrap().first().unwrap();
+        let function = stake_hub_abi
+            .function("getValidatorElectionInfo")
+            .unwrap()
+            .first()
+            .unwrap();
         let input = function
-            .abi_encode_input(&[DynSolValue::from(U256::from(0)), DynSolValue::from(U256::from(0))])
+            .abi_encode_input(&[
+                DynSolValue::from(U256::from(0)),
+                DynSolValue::from(U256::from(0)),
+            ])
             .unwrap();
 
         let input_str = hex::encode(&input);
@@ -5901,13 +5908,25 @@ mod tests {
         let output = hex::decode(output_str).unwrap();
 
         let stake_hub_abi: JsonAbi = serde_json::from_str(*STAKE_HUB_ABI).unwrap();
-        let function = stake_hub_abi.function("getValidatorElectionInfo").unwrap().first().unwrap();
+        let function = stake_hub_abi
+            .function("getValidatorElectionInfo")
+            .unwrap()
+            .first()
+            .unwrap();
         let output = function.abi_decode_output(&output).unwrap();
 
-        let consensus_address: Vec<Address> =
-            output[0].as_array().unwrap().iter().map(|val| val.as_address().unwrap()).collect();
-        let voting_powers: Vec<U256> =
-            output[1].as_array().unwrap().iter().map(|val| val.as_uint().unwrap().0).collect();
+        let consensus_address: Vec<Address> = output[0]
+            .as_array()
+            .unwrap()
+            .iter()
+            .map(|val| val.as_address().unwrap())
+            .collect();
+        let voting_powers: Vec<U256> = output[1]
+            .as_array()
+            .unwrap()
+            .iter()
+            .map(|val| val.as_uint().unwrap().0)
+            .collect();
         let vote_addresses: Vec<Vec<u8>> = output[2]
             .as_array()
             .unwrap()

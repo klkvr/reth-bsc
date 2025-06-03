@@ -52,7 +52,10 @@ where
             let block_hash = block.hash();
             let excess_blob_gas = block.excess_blob_gas();
             let timestamp = block.timestamp();
-            let blob_params = self.provider().chain_spec().blob_params_at_timestamp(timestamp);
+            let blob_params = self
+                .provider()
+                .chain_spec()
+                .blob_params_at_timestamp(timestamp);
 
             return block
                 .body()
@@ -74,7 +77,7 @@ where
                         .map(|builder| builder.build())
                 })
                 .collect::<Result<Vec<_>, Self::Error>>()
-                .map(Some)
+                .map(Some);
         }
 
         Ok(None)
@@ -168,7 +171,10 @@ where
             .await
             .map_err(Self::Error::from_eth_err)?
             .ok_or(EthApiError::HeaderNotFound(hash.into()))?;
-        let blob_params = self.provider().chain_spec().blob_params_at_timestamp(meta.timestamp);
+        let blob_params = self
+            .provider()
+            .chain_spec()
+            .blob_params_at_timestamp(meta.timestamp);
 
         Ok(EthReceiptBuilder::new(&tx, meta, &receipt, &all_receipts, blob_params)?.build())
     }

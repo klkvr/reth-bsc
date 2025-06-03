@@ -117,9 +117,10 @@ where
                         result: Err(BlockImportError::Other("Unsupported payload status".into())),
                     },
                 },
-                Err(err) => {
-                    Outcome::<T> { peer: peer_id, result: Err(BlockImportError::Other(err.into())) }
-                }
+                Err(err) => Outcome::<T> {
+                    peer: peer_id,
+                    result: Err(BlockImportError::Other(err.into())),
+                },
             }
         })
     }
@@ -144,7 +145,9 @@ where
                 Err(ParliaConsensusErr::HeadHashNotFound) => {
                     return Outcome::<T> {
                         peer: peer_id,
-                        result: Err(BlockImportError::Other("Current head hash not found".into())),
+                        result: Err(BlockImportError::Other(
+                            "Current head hash not found".into(),
+                        )),
                     }
                 }
             };
@@ -155,7 +158,9 @@ where
                 finalized_block_hash: current_hash,
             };
 
-            match engine.fork_choice_updated(state, None, EngineApiMessageVersion::default()).await
+            match engine
+                .fork_choice_updated(state, None, EngineApiMessageVersion::default())
+                .await
             {
                 Ok(response) => match response.payload_status.status {
                     PayloadStatusEnum::Valid => Outcome::<T> {
@@ -179,9 +184,10 @@ where
                         )),
                     },
                 },
-                Err(err) => {
-                    Outcome::<T> { peer: peer_id, result: Err(BlockImportError::Other(err.into())) }
-                }
+                Err(err) => Outcome::<T> {
+                    peer: peer_id,
+                    result: Err(BlockImportError::Other(err.into())),
+                },
             }
         })
     }
@@ -331,12 +337,17 @@ mod tests {
 
     impl EngineResponses {
         fn both_valid() -> Self {
-            Self { new_payload: PayloadStatusEnum::Valid, fcu: PayloadStatusEnum::Valid }
+            Self {
+                new_payload: PayloadStatusEnum::Valid,
+                fcu: PayloadStatusEnum::Valid,
+            }
         }
 
         fn invalid_new_payload() -> Self {
             Self {
-                new_payload: PayloadStatusEnum::Invalid { validation_error: "test error".into() },
+                new_payload: PayloadStatusEnum::Invalid {
+                    validation_error: "test error".into(),
+                },
                 fcu: PayloadStatusEnum::Valid,
             }
         }
@@ -344,7 +355,9 @@ mod tests {
         fn invalid_fcu() -> Self {
             Self {
                 new_payload: PayloadStatusEnum::Valid,
-                fcu: PayloadStatusEnum::Invalid { validation_error: "fcu error".into() },
+                fcu: PayloadStatusEnum::Invalid {
+                    validation_error: "fcu error".into(),
+                },
             }
         }
     }
@@ -357,7 +370,9 @@ mod tests {
     impl TestFixture {
         /// Create a new test fixture with the given engine responses
         async fn new(responses: EngineResponses) -> Self {
-            let consensus = Arc::new(ParliaConsensus { provider: MockProvider });
+            let consensus = Arc::new(ParliaConsensus {
+                provider: MockProvider,
+            });
             let (to_engine, from_engine) = mpsc::unbounded_channel();
             let engine_handle = BeaconConsensusEngineHandle::new(to_engine);
 
@@ -405,8 +420,14 @@ mod tests {
     /// Creates a test block message
     fn create_test_block() -> NewBlockMessage<Block> {
         let block: reth_primitives::Block = Block::default();
-        let new_block = NewBlock { block: block.clone(), td: U128::ZERO };
-        NewBlockMessage { hash: block.header.hash_slow(), block: Arc::new(new_block) }
+        let new_block = NewBlock {
+            block: block.clone(),
+            td: U128::ZERO,
+        };
+        NewBlockMessage {
+            hash: block.header.hash_slow(),
+            block: Arc::new(new_block),
+        }
     }
 
     /// Helper function to handle engine messages with specified payload statuses

@@ -35,7 +35,9 @@ impl BscNetworkBuilder {
     {
         let network_builder = ctx.network_config_builder()?;
         let mut discv4 = Discv4Config::builder();
-        discv4.add_boot_nodes(boot_nodes()).lookup_interval(Duration::from_millis(500));
+        discv4
+            .add_boot_nodes(boot_nodes())
+            .lookup_interval(Duration::from_millis(500));
 
         let network_builder = network_builder
             .boot_nodes(boot_nodes())

@@ -23,7 +23,9 @@ pub struct BscHandler<EVM, ERROR, FRAME> {
 
 impl<EVM, ERROR, FRAME> BscHandler<EVM, ERROR, FRAME> {
     pub fn new() -> Self {
-        Self { mainnet: MainnetHandler::default() }
+        Self {
+            mainnet: MainnetHandler::default(),
+        }
     }
 }
 
@@ -66,7 +68,10 @@ where
         let tx = ctx.tx();
 
         if tx.is_system_transaction() {
-            return Ok(InitialAndFloorGas { initial_gas: 0, floor_gas: 0 });
+            return Ok(InitialAndFloorGas {
+                initial_gas: 0,
+                floor_gas: 0,
+            });
         }
 
         self.mainnet.validate_initial_tx_gas(evm)
@@ -110,8 +115,11 @@ where
         ctx.error();
         let tx = ctx.tx();
         // used gas with refund calculated.
-        let gas_refunded =
-            if tx.is_system_transaction() { 0 } else { result.gas().refunded() as u64 };
+        let gas_refunded = if tx.is_system_transaction() {
+            0
+        } else {
+            result.gas().refunded() as u64
+        };
         let final_gas_used = result.gas().spent() - gas_refunded;
         let output = result.output();
         let instruction_result = result.into_interpreter_result();
@@ -129,12 +137,14 @@ where
                 logs,
                 output,
             },
-            SuccessOrHalt::Revert => {
-                ExecutionResult::Revert { gas_used: final_gas_used, output: output.into_data() }
-            }
-            SuccessOrHalt::Halt(reason) => {
-                ExecutionResult::Halt { reason, gas_used: final_gas_used }
-            }
+            SuccessOrHalt::Revert => ExecutionResult::Revert {
+                gas_used: final_gas_used,
+                output: output.into_data(),
+            },
+            SuccessOrHalt::Halt(reason) => ExecutionResult::Halt {
+                reason,
+                gas_used: final_gas_used,
+            },
             // Only two internal return flags.
             flag @ (SuccessOrHalt::FatalExternalError | SuccessOrHalt::Internal(_)) => {
                 panic!(

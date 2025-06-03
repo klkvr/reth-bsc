@@ -94,7 +94,10 @@ where
 
     /// Applies system contract upgrades if the Feynman fork is not yet active.
     fn apply_upgrade_contracts_if_before_feynman(&mut self) -> Result<(), BlockExecutionError> {
-        if self.spec.is_feynman_active_at_timestamp(self.evm.block().timestamp) {
+        if self
+            .spec
+            .is_feynman_active_at_timestamp(self.evm.block().timestamp)
+        {
             return Ok(());
         }
 
@@ -182,20 +185,24 @@ where
             is_system_transaction: true,
         };
 
-        let result_and_state = self.evm.transact(tx_env).map_err(BlockExecutionError::other)?;
+        let result_and_state = self
+            .evm
+            .transact(tx_env)
+            .map_err(BlockExecutionError::other)?;
 
         let ResultAndState { result, state } = result_and_state;
 
         let tx = tx.clone();
         let gas_used = result.gas_used();
         self.gas_used += gas_used;
-        self.receipts.push(self.receipt_builder.build_receipt(ReceiptBuilderCtx {
-            tx: &tx,
-            evm: &self.evm,
-            result,
-            state: &state,
-            cumulative_gas_used: self.gas_used,
-        }));
+        self.receipts
+            .push(self.receipt_builder.build_receipt(ReceiptBuilderCtx {
+                tx: &tx,
+                evm: &self.evm,
+                result,
+                state: &state,
+                cumulative_gas_used: self.gas_used,
+            }));
         self.evm.db_mut().commit(state);
 
         Ok(())
@@ -207,15 +214,20 @@ where
         address: Address,
         code: Bytecode,
     ) -> Result<(), BlockExecutionError> {
-        let account =
-            self.evm.db_mut().load_cache_account(address).map_err(BlockExecutionError::other)?;
+        let account = self
+            .evm
+            .db_mut()
+            .load_cache_account(address)
+            .map_err(BlockExecutionError::other)?;
 
         let mut info = account.account_info().unwrap_or_default();
         info.code_hash = code.hash_slow();
         info.code = Some(code);
 
         let transition = account.change(info, Default::default());
-        self.evm.db_mut().apply_transition(vec![(address, transition)]);
+        self.evm
+            .db_mut()
+            .apply_transition(vec![(address, transition)]);
         Ok(())
     }
 
@@ -246,15 +258,17 @@ where
             .load_cache_account(SYSTEM_ADDRESS)
             .map_err(BlockExecutionError::other)?;
 
-        if system_account.account.is_none() ||
-            system_account.account.as_ref().unwrap().info.balance == U256::ZERO
+        if system_account.account.is_none()
+            || system_account.account.as_ref().unwrap().info.balance == U256::ZERO
         {
             return Ok(());
         }
 
         let (mut block_reward, mut transition) = system_account.drain_balance();
         transition.info = None;
-        self.evm.db_mut().apply_transition(vec![(SYSTEM_ADDRESS, transition)]);
+        self.evm
+            .db_mut()
+            .apply_transition(vec![(SYSTEM_ADDRESS, transition)]);
         let balance_increment = vec![(validator, block_reward)];
 
         self.evm
@@ -272,8 +286,10 @@ where
 
         // Kepler introduced a max system reward limit, so we need to pay the system reward to the
         // system contract if the limit is not exceeded.
-        if !self.spec.is_kepler_active_at_timestamp(self.evm.block().timestamp) &&
-            system_reward_balance < U256::from(MAX_SYSTEM_REWARD)
+        if !self
+            .spec
+            .is_kepler_active_at_timestamp(self.evm.block().timestamp)
+            && system_reward_balance < U256::from(MAX_SYSTEM_REWARD)
         {
             let reward_to_system = block_reward >> SYSTEM_REWARD_PERCENT;
             if reward_to_system > 0 {
@@ -284,7 +300,9 @@ where
             block_reward -= reward_to_system;
         }
 
-        let tx = self.system_contracts.pay_validator_tx(validator, block_reward);
+        let tx = self
+            .system_contracts
+            .pay_validator_tx(validator, block_reward);
         self.transact_system_tx(&tx, validator)?;
         Ok(())
     }
@@ -312,8 +330,9 @@ where
 
     fn apply_pre_execution_changes(&mut self) -> Result<(), BlockExecutionError> {
         // Set state clear flag if the block is after the Spurious Dragon hardfork.
-        let state_clear_flag =
-            self.spec.is_spurious_dragon_active_at_block(self.evm.block().number);
+        let state_clear_flag = self
+            .spec
+            .is_spurious_dragon_active_at_block(self.evm.block().number);
         self.evm.db_mut().set_state_clear_flag(state_clear_flag);
 
         // TODO: (Consensus Verify cascading fields)[https://github.com/bnb-chain/reth/blob/main/crates/bsc/evm/src/pre_execution.rs#L43]
@@ -351,11 +370,13 @@ where
 
         let block_available_gas = self.evm.block().gas_limit - self.gas_used;
         if tx.tx().gas_limit() > block_available_gas {
-            return Err(BlockValidationError::TransactionGasLimitMoreThanAvailableBlockGas {
-                transaction_gas_limit: tx.tx().gas_limit(),
-                block_available_gas,
-            }
-            .into());
+            return Err(
+                BlockValidationError::TransactionGasLimitMoreThanAvailableBlockGas {
+                    transaction_gas_limit: tx.tx().gas_limit(),
+                    block_available_gas,
+                }
+                .into(),
+            );
         }
         let result_and_state = self
             .evm
@@ -365,13 +386,14 @@ where
         f(&result);
         let gas_used = result.gas_used();
         self.gas_used += gas_used;
-        self.receipts.push(self.receipt_builder.build_receipt(ReceiptBuilderCtx {
-            tx: tx.tx(),
-            evm: &self.evm,
-            result,
-            state: &state,
-            cumulative_gas_used: self.gas_used,
-        }));
+        self.receipts
+            .push(self.receipt_builder.build_receipt(ReceiptBuilderCtx {
+                tx: tx.tx(),
+                evm: &self.evm,
+                result,
+                state: &state,
+                cumulative_gas_used: self.gas_used,
+            }));
         self.evm.db_mut().commit(state);
 
         // apply patches after
@@ -394,7 +416,10 @@ where
 
         self.apply_upgrade_contracts_if_before_feynman()?;
 
-        if self.spec.is_feynman_active_at_timestamp(self.evm.block().timestamp) {
+        if self
+            .spec
+            .is_feynman_active_at_timestamp(self.evm.block().timestamp)
+        {
             self.deploy_feynman_contracts(self.evm.block().beneficiary)?;
         }
 

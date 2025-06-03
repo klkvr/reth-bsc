@@ -23,13 +23,19 @@ pub struct BscTxEnv<T: Transaction> {
 
 impl<T: Transaction> BscTxEnv<T> {
     pub fn new(base: T) -> Self {
-        Self { base, is_system_transaction: false }
+        Self {
+            base,
+            is_system_transaction: false,
+        }
     }
 }
 
 impl Default for BscTxEnv<TxEnv> {
     fn default() -> Self {
-        Self { base: TxEnv::default(), is_system_transaction: false }
+        Self {
+            base: TxEnv::default(),
+            is_system_transaction: false,
+        }
     }
 }
 
@@ -140,7 +146,10 @@ impl FromTxWithEncoded<TransactionSigned> for BscTxEnv<TxEnv> {
             reth_primitives::Transaction::Eip7702(tx) => TxEnv::from_recovered_tx(&tx, sender),
         };
 
-        Self { base, is_system_transaction: false }
+        Self {
+            base,
+            is_system_transaction: false,
+        }
     }
 }
 

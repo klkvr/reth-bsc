@@ -30,8 +30,8 @@ fn tm_secp256k1_signature_recover_run(input: &[u8], gas_limit: u64) -> Precompil
     }
 
     let input_length = input.len();
-    if input_length !=
-        SECP256K1_PUBKEY_LENGTH + SECP256K1_SIGNATURE_LENGTH + SECP256K1_SIGNATURE_MSGHASH_LENGTH
+    if input_length
+        != SECP256K1_PUBKEY_LENGTH + SECP256K1_SIGNATURE_LENGTH + SECP256K1_SIGNATURE_MSGHASH_LENGTH
     {
         return Err(PrecompileError::other("invalid input"));
     }
@@ -42,7 +42,9 @@ fn tm_secp256k1_signature_recover_run(input: &[u8], gas_limit: u64) -> Precompil
     };
 
     let message = Message::from_digest(
-        input[SECP256K1_PUBKEY_LENGTH + SECP256K1_SIGNATURE_LENGTH..].try_into().unwrap(),
+        input[SECP256K1_PUBKEY_LENGTH + SECP256K1_SIGNATURE_LENGTH..]
+            .try_into()
+            .unwrap(),
     );
 
     let sig = match ecdsa::Signature::from_compact(

@@ -91,7 +91,11 @@ impl<R, Spec, EvmFactory> BscBlockExecutorFactory<R, Spec, EvmFactory> {
     /// Creates a new [`BscBlockExecutorFactory`] with the given spec, [`EvmFactory`], and
     /// [`ReceiptBuilder`].
     pub const fn new(receipt_builder: R, spec: Spec, evm_factory: EvmFactory) -> Self {
-        Self { receipt_builder, spec, evm_factory }
+        Self {
+            receipt_builder,
+            spec,
+            evm_factory,
+        }
     }
 
     /// Exposes the receipt builder.
@@ -166,7 +170,9 @@ where
     fn evm_env(&self, header: &Header) -> EvmEnv<BscSpecId> {
         let spec = revm_spec(self.chain_spec().clone(), header.number());
 
-        let cfg_env = CfgEnv::new().with_chain_id(self.chain_spec().chain().id()).with_spec(spec);
+        let cfg_env = CfgEnv::new()
+            .with_chain_id(self.chain_spec().chain().id())
+            .with_spec(spec);
 
         let block_env = BlockEnv {
             number: header.number(),
@@ -195,20 +201,23 @@ where
             revm_spec_by_timestamp_after_shanghai(self.chain_spec().clone(), attributes.timestamp);
 
         // configure evm env based on parent block
-        let cfg_env =
-            CfgEnv::new().with_chain_id(self.chain_spec().chain().id()).with_spec(spec_id);
+        let cfg_env = CfgEnv::new()
+            .with_chain_id(self.chain_spec().chain().id())
+            .with_spec(spec_id);
 
         // if the parent block did not have excess blob gas (i.e. it was pre-cancun), but it is
         // cancun now, we need to set the excess blob gas to the default value(0)
         let blob_excess_gas_and_price = parent
             .maybe_next_block_excess_blob_gas(
-                self.chain_spec().blob_params_at_timestamp(attributes.timestamp),
+                self.chain_spec()
+                    .blob_params_at_timestamp(attributes.timestamp),
             )
             .or_else(|| (spec_id.into_eth_spec().is_enabled_in(SpecId::CANCUN)).then_some(0))
             .map(|gas| BlobExcessGasAndPrice::new(gas, false));
 
         let mut basefee = parent.next_block_base_fee(
-            self.chain_spec().base_fee_params_at_timestamp(attributes.timestamp),
+            self.chain_spec()
+                .base_fee_params_at_timestamp(attributes.timestamp),
         );
 
         let mut gas_limit = U256::from(parent.gas_limit);
@@ -286,17 +295,35 @@ pub fn revm_spec_by_timestamp_after_shanghai(
     timestamp: u64,
 ) -> BscSpecId {
     let chain_spec = chain_spec.inner.clone();
-    if chain_spec.fork(BscHardfork::Bohr).active_at_timestamp(timestamp) {
+    if chain_spec
+        .fork(BscHardfork::Bohr)
+        .active_at_timestamp(timestamp)
+    {
         BscSpecId::BOHR
-    } else if chain_spec.fork(BscHardfork::HaberFix).active_at_timestamp(timestamp) {
+    } else if chain_spec
+        .fork(BscHardfork::HaberFix)
+        .active_at_timestamp(timestamp)
+    {
         BscSpecId::HABER_FIX
-    } else if chain_spec.fork(BscHardfork::Haber).active_at_timestamp(timestamp) {
+    } else if chain_spec
+        .fork(BscHardfork::Haber)
+        .active_at_timestamp(timestamp)
+    {
         BscSpecId::HABER
-    } else if chain_spec.fork(BscHardfork::FeynmanFix).active_at_timestamp(timestamp) {
+    } else if chain_spec
+        .fork(BscHardfork::FeynmanFix)
+        .active_at_timestamp(timestamp)
+    {
         BscSpecId::FEYNMAN_FIX
-    } else if chain_spec.fork(BscHardfork::Feynman).active_at_timestamp(timestamp) {
+    } else if chain_spec
+        .fork(BscHardfork::Feynman)
+        .active_at_timestamp(timestamp)
+    {
         BscSpecId::FEYNMAN
-    } else if chain_spec.fork(BscHardfork::Kepler).active_at_timestamp(timestamp) {
+    } else if chain_spec
+        .fork(BscHardfork::Kepler)
+        .active_at_timestamp(timestamp)
+    {
         BscSpecId::KEPLER
     } else {
         BscSpecId::SHANGHAI
@@ -313,27 +340,48 @@ pub fn revm_spec(chain_spec: Arc<BscChainSpec>, block: BlockNumber) -> BscSpecId
     let chain_spec = chain_spec.inner.clone();
     if chain_spec.fork(BscHardfork::Bohr).active_at_block(block) {
         BscSpecId::BOHR
-    } else if chain_spec.fork(BscHardfork::HaberFix).active_at_block(block) {
+    } else if chain_spec
+        .fork(BscHardfork::HaberFix)
+        .active_at_block(block)
+    {
         BscSpecId::HABER_FIX
     } else if chain_spec.fork(BscHardfork::Haber).active_at_block(block) {
         BscSpecId::HABER
-    } else if chain_spec.fork(EthereumHardfork::Cancun).active_at_block(block) {
+    } else if chain_spec
+        .fork(EthereumHardfork::Cancun)
+        .active_at_block(block)
+    {
         BscSpecId::CANCUN
-    } else if chain_spec.fork(BscHardfork::FeynmanFix).active_at_block(block) {
+    } else if chain_spec
+        .fork(BscHardfork::FeynmanFix)
+        .active_at_block(block)
+    {
         BscSpecId::FEYNMAN_FIX
     } else if chain_spec.fork(BscHardfork::Feynman).active_at_block(block) {
         BscSpecId::FEYNMAN
     } else if chain_spec.fork(BscHardfork::Kepler).active_at_block(block) {
         BscSpecId::KEPLER
-    } else if chain_spec.fork(EthereumHardfork::Shanghai).active_at_block(block) {
+    } else if chain_spec
+        .fork(EthereumHardfork::Shanghai)
+        .active_at_block(block)
+    {
         BscSpecId::SHANGHAI
-    } else if chain_spec.fork(BscHardfork::HertzFix).active_at_block(block) {
+    } else if chain_spec
+        .fork(BscHardfork::HertzFix)
+        .active_at_block(block)
+    {
         BscSpecId::HERTZ_FIX
     } else if chain_spec.fork(BscHardfork::Hertz).active_at_block(block) {
         BscSpecId::HERTZ
-    } else if chain_spec.fork(EthereumHardfork::London).active_at_block(block) {
+    } else if chain_spec
+        .fork(EthereumHardfork::London)
+        .active_at_block(block)
+    {
         BscSpecId::LONDON
-    } else if chain_spec.fork(EthereumHardfork::Berlin).active_at_block(block) {
+    } else if chain_spec
+        .fork(EthereumHardfork::Berlin)
+        .active_at_block(block)
+    {
         BscSpecId::BERLIN
     } else if chain_spec.fork(BscHardfork::Plato).active_at_block(block) {
         BscSpecId::PLATO
@@ -358,25 +406,52 @@ pub fn revm_spec(chain_spec: Arc<BscChainSpec>, block: BlockNumber) -> BscSpecId
         BscSpecId::EULER
     } else if chain_spec.fork(BscHardfork::Bruno).active_at_block(block) {
         BscSpecId::BRUNO
-    } else if chain_spec.fork(BscHardfork::MirrorSync).active_at_block(block) {
+    } else if chain_spec
+        .fork(BscHardfork::MirrorSync)
+        .active_at_block(block)
+    {
         BscSpecId::MIRROR_SYNC
     } else if chain_spec.fork(BscHardfork::Niels).active_at_block(block) {
         BscSpecId::NIELS
-    } else if chain_spec.fork(BscHardfork::Ramanujan).active_at_block(block) {
+    } else if chain_spec
+        .fork(BscHardfork::Ramanujan)
+        .active_at_block(block)
+    {
         BscSpecId::RAMANUJAN
-    } else if chain_spec.fork(EthereumHardfork::MuirGlacier).active_at_block(block) {
+    } else if chain_spec
+        .fork(EthereumHardfork::MuirGlacier)
+        .active_at_block(block)
+    {
         BscSpecId::MUIR_GLACIER
-    } else if chain_spec.fork(EthereumHardfork::Istanbul).active_at_block(block) {
+    } else if chain_spec
+        .fork(EthereumHardfork::Istanbul)
+        .active_at_block(block)
+    {
         BscSpecId::ISTANBUL
-    } else if chain_spec.fork(EthereumHardfork::Petersburg).active_at_block(block) {
+    } else if chain_spec
+        .fork(EthereumHardfork::Petersburg)
+        .active_at_block(block)
+    {
         BscSpecId::PETERSBURG
-    } else if chain_spec.fork(EthereumHardfork::Constantinople).active_at_block(block) {
+    } else if chain_spec
+        .fork(EthereumHardfork::Constantinople)
+        .active_at_block(block)
+    {
         BscSpecId::CONSTANTINOPLE
-    } else if chain_spec.fork(EthereumHardfork::Byzantium).active_at_block(block) {
+    } else if chain_spec
+        .fork(EthereumHardfork::Byzantium)
+        .active_at_block(block)
+    {
         BscSpecId::BYZANTIUM
-    } else if chain_spec.fork(EthereumHardfork::Homestead).active_at_block(block) {
+    } else if chain_spec
+        .fork(EthereumHardfork::Homestead)
+        .active_at_block(block)
+    {
         BscSpecId::HOMESTEAD
-    } else if chain_spec.fork(EthereumHardfork::Frontier).active_at_block(block) {
+    } else if chain_spec
+        .fork(EthereumHardfork::Frontier)
+        .active_at_block(block)
+    {
         BscSpecId::FRONTIER
     } else {
         panic!(

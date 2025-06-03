@@ -32,7 +32,10 @@ fn tendermint_header_validation_run(input: &[u8], gas_limit: u64) -> PrecompileR
     let mut bytes = BytesRef::Flexible(&mut output);
     let res = light_client::TmHeaderVerifier::execute(input, &mut bytes);
     match res {
-        Ok(()) => Ok(PrecompileOutput::new(TENDERMINT_HEADER_VALIDATION_BASE, Bytes::from(output))),
+        Ok(()) => Ok(PrecompileOutput::new(
+            TENDERMINT_HEADER_VALIDATION_BASE,
+            Bytes::from(output),
+        )),
         Err(str) => Err(PrecompileError::other(str)),
     }
 }

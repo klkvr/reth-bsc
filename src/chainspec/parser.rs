@@ -23,7 +23,9 @@ impl ChainSpecParser for BscChainSpecParser {
 /// to a json file, or a json formatted string in-memory. The json needs to be a Genesis struct.
 pub fn chain_value_parser(s: &str) -> eyre::Result<Arc<BscChainSpec>> {
     match s {
-        "bsc" => Ok(Arc::new(BscChainSpec { inner: bsc_mainnet() })),
+        "bsc" => Ok(Arc::new(BscChainSpec {
+            inner: bsc_mainnet(),
+        })),
         _ => Err(eyre::eyre!("Unsupported chain: {}", s)),
     }
 }

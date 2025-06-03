@@ -266,6 +266,8 @@ where
         .proof_permits(ctx.config.proof_permits)
         .build_inner();
 
-        Ok(BscEthApi { inner: Arc::new(BscEthApiInner { eth_api }) })
+        Ok(BscEthApi {
+            inner: Arc::new(BscEthApiInner { eth_api }),
+        })
     }
 }

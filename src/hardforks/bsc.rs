@@ -61,10 +61,10 @@ impl BscHardfork {
     /// Retrieves the activation block for the specified hardfork on the given chain.
     pub fn activation_block<H: Hardfork>(self, fork: H, chain: Chain) -> Option<u64> {
         if chain == Chain::bsc_mainnet() {
-            return Self::bsc_mainnet_activation_block(fork)
+            return Self::bsc_mainnet_activation_block(fork);
         }
         if chain == Chain::bsc_testnet() {
-            return Self::bsc_testnet_activation_block(fork)
+            return Self::bsc_testnet_activation_block(fork);
         }
 
         None
@@ -73,10 +73,10 @@ impl BscHardfork {
     /// Retrieves the activation timestamp for the specified hardfork on the given chain.
     pub fn activation_timestamp<H: Hardfork>(self, fork: H, chain: Chain) -> Option<u64> {
         if chain == Chain::bsc_mainnet() {
-            return Self::bsc_mainnet_activation_timestamp(fork)
+            return Self::bsc_mainnet_activation_timestamp(fork);
         }
         if chain == Chain::bsc_testnet() {
-            return Self::bsc_testnet_activation_timestamp(fork)
+            return Self::bsc_testnet_activation_timestamp(fork);
         }
 
         None
@@ -87,15 +87,15 @@ impl BscHardfork {
         match_hardfork(
             fork,
             |fork| match fork {
-                EthereumHardfork::Frontier |
-                EthereumHardfork::Homestead |
-                EthereumHardfork::Tangerine |
-                EthereumHardfork::SpuriousDragon |
-                EthereumHardfork::Byzantium |
-                EthereumHardfork::Constantinople |
-                EthereumHardfork::Petersburg |
-                EthereumHardfork::Istanbul |
-                EthereumHardfork::MuirGlacier => Some(0),
+                EthereumHardfork::Frontier
+                | EthereumHardfork::Homestead
+                | EthereumHardfork::Tangerine
+                | EthereumHardfork::SpuriousDragon
+                | EthereumHardfork::Byzantium
+                | EthereumHardfork::Constantinople
+                | EthereumHardfork::Petersburg
+                | EthereumHardfork::Istanbul
+                | EthereumHardfork::MuirGlacier => Some(0),
                 EthereumHardfork::Berlin | EthereumHardfork::London => Some(31302048),
                 _ => None,
             },
@@ -122,15 +122,15 @@ impl BscHardfork {
         match_hardfork(
             fork,
             |fork| match fork {
-                EthereumHardfork::Frontier |
-                EthereumHardfork::Homestead |
-                EthereumHardfork::Tangerine |
-                EthereumHardfork::SpuriousDragon |
-                EthereumHardfork::Byzantium |
-                EthereumHardfork::Constantinople |
-                EthereumHardfork::Petersburg |
-                EthereumHardfork::Istanbul |
-                EthereumHardfork::MuirGlacier => Some(0),
+                EthereumHardfork::Frontier
+                | EthereumHardfork::Homestead
+                | EthereumHardfork::Tangerine
+                | EthereumHardfork::SpuriousDragon
+                | EthereumHardfork::Byzantium
+                | EthereumHardfork::Constantinople
+                | EthereumHardfork::Petersburg
+                | EthereumHardfork::Istanbul
+                | EthereumHardfork::MuirGlacier => Some(0),
                 EthereumHardfork::Berlin | EthereumHardfork::London => Some(31103030),
                 _ => None,
             },
@@ -197,12 +197,24 @@ impl BscHardfork {
             (EthereumHardfork::Frontier.boxed(), ForkCondition::Block(0)),
             (EthereumHardfork::Homestead.boxed(), ForkCondition::Block(0)),
             (EthereumHardfork::Tangerine.boxed(), ForkCondition::Block(0)),
-            (EthereumHardfork::SpuriousDragon.boxed(), ForkCondition::Block(0)),
+            (
+                EthereumHardfork::SpuriousDragon.boxed(),
+                ForkCondition::Block(0),
+            ),
             (EthereumHardfork::Byzantium.boxed(), ForkCondition::Block(0)),
-            (EthereumHardfork::Constantinople.boxed(), ForkCondition::Block(0)),
-            (EthereumHardfork::Petersburg.boxed(), ForkCondition::Block(0)),
+            (
+                EthereumHardfork::Constantinople.boxed(),
+                ForkCondition::Block(0),
+            ),
+            (
+                EthereumHardfork::Petersburg.boxed(),
+                ForkCondition::Block(0),
+            ),
             (EthereumHardfork::Istanbul.boxed(), ForkCondition::Block(0)),
-            (EthereumHardfork::MuirGlacier.boxed(), ForkCondition::Block(0)),
+            (
+                EthereumHardfork::MuirGlacier.boxed(),
+                ForkCondition::Block(0),
+            ),
             (Self::Ramanujan.boxed(), ForkCondition::Block(0)),
             (Self::Niels.boxed(), ForkCondition::Block(0)),
             (Self::MirrorSync.boxed(), ForkCondition::Block(5184000)),
@@ -214,15 +226,30 @@ impl BscHardfork {
             (Self::Planck.boxed(), ForkCondition::Block(27281024)),
             (Self::Luban.boxed(), ForkCondition::Block(29020050)),
             (Self::Plato.boxed(), ForkCondition::Block(30720096)),
-            (EthereumHardfork::Berlin.boxed(), ForkCondition::Block(31302048)),
-            (EthereumHardfork::London.boxed(), ForkCondition::Block(31302048)),
+            (
+                EthereumHardfork::Berlin.boxed(),
+                ForkCondition::Block(31302048),
+            ),
+            (
+                EthereumHardfork::London.boxed(),
+                ForkCondition::Block(31302048),
+            ),
             (Self::Hertz.boxed(), ForkCondition::Block(31302048)),
             (Self::HertzFix.boxed(), ForkCondition::Block(34140700)),
-            (EthereumHardfork::Shanghai.boxed(), ForkCondition::Timestamp(1705996800)),
+            (
+                EthereumHardfork::Shanghai.boxed(),
+                ForkCondition::Timestamp(1705996800),
+            ),
             (Self::Kepler.boxed(), ForkCondition::Timestamp(1705996800)),
             (Self::Feynman.boxed(), ForkCondition::Timestamp(1713419340)),
-            (Self::FeynmanFix.boxed(), ForkCondition::Timestamp(1713419340)),
-            (EthereumHardfork::Cancun.boxed(), ForkCondition::Timestamp(1713419340)),
+            (
+                Self::FeynmanFix.boxed(),
+                ForkCondition::Timestamp(1713419340),
+            ),
+            (
+                EthereumHardfork::Cancun.boxed(),
+                ForkCondition::Timestamp(1713419340),
+            ),
             (Self::Haber.boxed(), ForkCondition::Timestamp(1718863500)),
             (Self::HaberFix.boxed(), ForkCondition::Timestamp(1727316120)),
             (Self::Bohr.boxed(), ForkCondition::Timestamp(1727317200)),
@@ -237,12 +264,24 @@ impl BscHardfork {
             (EthereumHardfork::Frontier.boxed(), ForkCondition::Block(0)),
             (EthereumHardfork::Homestead.boxed(), ForkCondition::Block(0)),
             (EthereumHardfork::Tangerine.boxed(), ForkCondition::Block(0)),
-            (EthereumHardfork::SpuriousDragon.boxed(), ForkCondition::Block(0)),
+            (
+                EthereumHardfork::SpuriousDragon.boxed(),
+                ForkCondition::Block(0),
+            ),
             (EthereumHardfork::Byzantium.boxed(), ForkCondition::Block(0)),
-            (EthereumHardfork::Constantinople.boxed(), ForkCondition::Block(0)),
-            (EthereumHardfork::Petersburg.boxed(), ForkCondition::Block(0)),
+            (
+                EthereumHardfork::Constantinople.boxed(),
+                ForkCondition::Block(0),
+            ),
+            (
+                EthereumHardfork::Petersburg.boxed(),
+                ForkCondition::Block(0),
+            ),
             (EthereumHardfork::Istanbul.boxed(), ForkCondition::Block(0)),
-            (EthereumHardfork::MuirGlacier.boxed(), ForkCondition::Block(0)),
+            (
+                EthereumHardfork::MuirGlacier.boxed(),
+                ForkCondition::Block(0),
+            ),
             (Self::Ramanujan.boxed(), ForkCondition::Block(1010000)),
             (Self::Niels.boxed(), ForkCondition::Block(1014369)),
             (Self::MirrorSync.boxed(), ForkCondition::Block(5582500)),
@@ -254,15 +293,30 @@ impl BscHardfork {
             (Self::Planck.boxed(), ForkCondition::Block(28196022)),
             (Self::Luban.boxed(), ForkCondition::Block(29295050)),
             (Self::Plato.boxed(), ForkCondition::Block(29861024)),
-            (EthereumHardfork::Berlin.boxed(), ForkCondition::Block(31103030)),
-            (EthereumHardfork::London.boxed(), ForkCondition::Block(31103030)),
+            (
+                EthereumHardfork::Berlin.boxed(),
+                ForkCondition::Block(31103030),
+            ),
+            (
+                EthereumHardfork::London.boxed(),
+                ForkCondition::Block(31103030),
+            ),
             (Self::Hertz.boxed(), ForkCondition::Block(31103030)),
             (Self::HertzFix.boxed(), ForkCondition::Block(35682300)),
-            (EthereumHardfork::Shanghai.boxed(), ForkCondition::Timestamp(1702972800)),
+            (
+                EthereumHardfork::Shanghai.boxed(),
+                ForkCondition::Timestamp(1702972800),
+            ),
             (Self::Kepler.boxed(), ForkCondition::Timestamp(1702972800)),
             (Self::Feynman.boxed(), ForkCondition::Timestamp(1710136800)),
-            (Self::FeynmanFix.boxed(), ForkCondition::Timestamp(1711342800)),
-            (EthereumHardfork::Cancun.boxed(), ForkCondition::Timestamp(1713330442)),
+            (
+                Self::FeynmanFix.boxed(),
+                ForkCondition::Timestamp(1711342800),
+            ),
+            (
+                EthereumHardfork::Cancun.boxed(),
+                ForkCondition::Timestamp(1713330442),
+            ),
             (Self::Haber.boxed(), ForkCondition::Timestamp(1716962820)),
             (Self::HaberFix.boxed(), ForkCondition::Timestamp(1719986788)),
             (Self::Bohr.boxed(), ForkCondition::Timestamp(1724116996)),
@@ -275,12 +329,24 @@ impl BscHardfork {
             (EthereumHardfork::Frontier.boxed(), ForkCondition::Block(0)),
             (EthereumHardfork::Homestead.boxed(), ForkCondition::Block(0)),
             (EthereumHardfork::Tangerine.boxed(), ForkCondition::Block(0)),
-            (EthereumHardfork::SpuriousDragon.boxed(), ForkCondition::Block(0)),
+            (
+                EthereumHardfork::SpuriousDragon.boxed(),
+                ForkCondition::Block(0),
+            ),
             (EthereumHardfork::Byzantium.boxed(), ForkCondition::Block(0)),
-            (EthereumHardfork::Constantinople.boxed(), ForkCondition::Block(0)),
-            (EthereumHardfork::Petersburg.boxed(), ForkCondition::Block(0)),
+            (
+                EthereumHardfork::Constantinople.boxed(),
+                ForkCondition::Block(0),
+            ),
+            (
+                EthereumHardfork::Petersburg.boxed(),
+                ForkCondition::Block(0),
+            ),
             (EthereumHardfork::Istanbul.boxed(), ForkCondition::Block(0)),
-            (EthereumHardfork::MuirGlacier.boxed(), ForkCondition::Block(0)),
+            (
+                EthereumHardfork::MuirGlacier.boxed(),
+                ForkCondition::Block(0),
+            ),
             (Self::Ramanujan.boxed(), ForkCondition::Block(0)),
             (Self::Niels.boxed(), ForkCondition::Block(0)),
             (Self::MirrorSync.boxed(), ForkCondition::Block(1)),
@@ -296,11 +362,20 @@ impl BscHardfork {
             (EthereumHardfork::London.boxed(), ForkCondition::Block(8)),
             (Self::Hertz.boxed(), ForkCondition::Block(8)),
             (Self::HertzFix.boxed(), ForkCondition::Block(8)),
-            (EthereumHardfork::Shanghai.boxed(), ForkCondition::Timestamp(1722442622)),
+            (
+                EthereumHardfork::Shanghai.boxed(),
+                ForkCondition::Timestamp(1722442622),
+            ),
             (Self::Kepler.boxed(), ForkCondition::Timestamp(1722442622)),
             (Self::Feynman.boxed(), ForkCondition::Timestamp(1722442622)),
-            (Self::FeynmanFix.boxed(), ForkCondition::Timestamp(1722442622)),
-            (EthereumHardfork::Cancun.boxed(), ForkCondition::Timestamp(1722442622)),
+            (
+                Self::FeynmanFix.boxed(),
+                ForkCondition::Timestamp(1722442622),
+            ),
+            (
+                EthereumHardfork::Cancun.boxed(),
+                ForkCondition::Timestamp(1722442622),
+            ),
             (Self::Haber.boxed(), ForkCondition::Timestamp(1722442622)),
             (Self::HaberFix.boxed(), ForkCondition::Timestamp(1722442622)),
             (Self::Bohr.boxed(), ForkCondition::Timestamp(1722444422)),
@@ -317,7 +392,7 @@ where
 {
     let fork: &dyn Any = &fork;
     if let Some(fork) = fork.downcast_ref::<EthereumHardfork>() {
-        return hardfork_fn(fork)
+        return hardfork_fn(fork);
     }
     fork.downcast_ref::<BscHardfork>().and_then(bsc_hardfork_fn)
 }
@@ -328,11 +403,17 @@ mod tests {
 
     #[test]
     fn test_match_hardfork() {
-        assert_eq!(BscHardfork::bsc_mainnet_activation_block(EthereumHardfork::Cancun), None);
+        assert_eq!(
+            BscHardfork::bsc_mainnet_activation_block(EthereumHardfork::Cancun),
+            None
+        );
         assert_eq!(
             BscHardfork::bsc_mainnet_activation_timestamp(EthereumHardfork::Cancun),
             Some(1718863500)
         );
-        assert_eq!(BscHardfork::bsc_mainnet_activation_timestamp(BscHardfork::HaberFix), None);
+        assert_eq!(
+            BscHardfork::bsc_mainnet_activation_timestamp(BscHardfork::HaberFix),
+            None
+        );
     }
 }
